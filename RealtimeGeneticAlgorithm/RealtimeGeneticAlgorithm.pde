@@ -9,11 +9,14 @@ float fertility = 0.003;
 float mutationRate = 0.1;
 boolean debug = false;
 String stats = new String();
+String info = new String();
+boolean showHelp = false;
+boolean hideStats = false;
 
 
 void setup() {
 
-      size(1000, 800, P3D);   
+      fullScreen(P3D); 
       background(0);
 
       creatureImg = createShape();
@@ -36,7 +39,6 @@ void setup() {
       }
 
       frameRate(60);
-      stats = "";
 }
 
 
@@ -64,15 +66,25 @@ void draw() {
             population.get(i).update();
             if (population.get(i).dead) {
                   //if (random(1) < 0.75)
-                        food.add(new Food(population.get(i).pos.x, population.get(i).pos.y, true));
+                  food.add(new Food(population.get(i).pos.x, population.get(i).pos.y, true));
                   population.remove(i);
             }
       }
 
-      fill(255);
+      fill(255, 150);
       stats = "";
-      stats += "Population: " + population.size() + "\nFood: " + (food.size() - rotCount) + "\nPoison: " + rotCount;
-      text(stats, 10, 10, 150, 150);
+      stats += "Population: " + population.size() + "\nFood: " + (food.size() - rotCount) + "\nPoison: " + rotCount + "\nFood Respawn Rate: " + nf(foodRespawn, 1, 2) + "\nPoison Respawn Rate: " + nf(poisonRespawn, 1, 2) + "\nFertility: " + nf(fertility, 1, 3) + "\nMutation rate: " + mutationRate;
+      info = "";
+      info += "Press \"d\" to enable debug\nPress \"n\" to spawn 50 new random population\nPress \"i\"/\"o\" to increase/decrease food respawn rate\nPress \"j\"/\"k\" to increase/decrease poison respawn rate\nPress \"f\"/\"g\" to increase/decrease fertility\nPress \"r\"/\"t\" to increase/decrease mutation rate";
+
+      if (!hideStats) {
+            text(stats, 10, 10, 250, 250);
+            if (showHelp)
+                  text(info, 10, 120);
+            else {
+                  text("Press \"u\" for help", 10, 120);
+            }
+      }
 }
 
 
@@ -91,5 +103,38 @@ void keyPressed() {
 
                   population.add(new Creature());
             }
+      }
+
+      if (key == 'i')
+            foodRespawn += 0.02;
+      if (key == 'o')
+            foodRespawn -= 0.02;
+
+      if (key == 'j')
+            poisonRespawn += 0.02;
+      if (key == 'k')
+            poisonRespawn -= 0.02;
+
+      if (key == 'f')
+            fertility += 0.001;
+      if (key == 'g')
+            fertility -= 0.001;
+
+      if (key == 'r')
+            mutationRate += 0.1;
+      if (key == 't')
+            mutationRate -= 0.1;
+
+      if (key == 'u')
+            if (showHelp)
+                  showHelp = false;
+            else showHelp = true;
+
+      if (key == 'h')
+            if (!hideStats)
+                  hideStats = true;
+            else hideStats = false;
+
+      if (key == 'p') {
       }
 }

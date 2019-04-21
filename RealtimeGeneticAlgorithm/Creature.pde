@@ -126,9 +126,15 @@ class Creature {
       void mutate() {
             if (random(1) < mutationRate) dna.genes[0] += random(-0.35, 0.35);
             if (random(1) < mutationRate) dna.genes[1] += random(-0.35, 0.35);
-            if (dna.genes[2] < 125 && dna.genes[2] > 25)
-                  if (random(1) < mutationRate) dna.genes[2] += random(-25, 25);
-            if (dna.genes[3] < 125 && dna.genes[2] > 25)
-                  if (random(1) < mutationRate) dna.genes[3] += random(-25, 25);
+            //if (dna.genes[2] < 125 && dna.genes[2] > 25)
+            if (random(1) < mutationRate) {
+                  dna.genes[2] += random(-25, 25);
+                  if (dna.genes[2] > 200) dna.genes[2] = 200;
+            }
+            //if (dna.genes[3] < 125 && dna.genes[2] > 25)
+            if (random(1) < mutationRate) {
+                  dna.genes[3] += random(-25, 25);
+                  if (dna.genes[3] > 200) dna.genes[3] = 200;
+            }
       }
 }
