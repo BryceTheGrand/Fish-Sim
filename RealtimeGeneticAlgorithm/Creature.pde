@@ -174,9 +174,10 @@ class Creature {
             if (random(1) < mutationRate) {
                   dna.genes[4] += random(-1, 1);
                   if (dna.genes[4] < 5) dna.genes[4] = 5;
+                  if (dna.genes[4] > 15) dna.genes[4] = 15;
                   dna.genes[5] = 1 / dna.genes[4];
             }
-            if (random(1) < mutationRate) dna.genes[6] += random(-0.35, 0.35);
+            if (random(1) < mutationRate) dna.genes[6] += random(-0.03, 0.03);
             if (random(1) < mutationRate) {
                   dna.genes[7] += random(-25, 25);
                   if (dna.genes[7] > 200) dna.genes[7] = 200;
