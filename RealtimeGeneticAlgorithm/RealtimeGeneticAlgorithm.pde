@@ -56,7 +56,7 @@ void draw() {
 
             food.add(new Food(random(10, width - 10), random(10, height - 10), true));
       }
-      if (random(1) <= poisonRespawn && rotCount < 50) {
+      if (random(1) <= poisonRespawn && rotCount < 150) {
 
             food.add(new Food(random(10, width - 10), random(10, height - 10), false));
       }

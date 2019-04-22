@@ -7,12 +7,21 @@ class Creature {
       PVector desiredFood = new PVector(0, 0);
       float health = 10;
       boolean dead = false;
+      float starvation = 0.075;
+      PVector desiredFish = new PVector(0, 0);
 
 
       Creature() {
 
             pos.set(random(10, width - 10), random(10, height - 10));
             vel.set(random(-5, 5), random(-5, 5));
+      }
+
+      Creature(float starve) {
+
+            pos.set(random(10, width - 10), random(10, height - 10));
+            vel.set(random(-5, 5), random(-5, 5));
+            starvation = starve;
       }
 
       void update() {
@@ -30,19 +39,19 @@ class Creature {
                   population.add(child);
             }
 
-            health -= 0.075;
+            health -= 13 * starvation / dna.genes[4];
             if (health < 0) {
 
                   dead = true;
             }
 
-            vel.limit(5);
+            vel.limit(25 * dna.genes[5]);
             pos.add(vel);
 
             push();
             translate(pos.x, pos.y);
             rotate(vel.heading() - HALF_PI);
-            shape(creatureImg, 0, 0, 5, 10);
+            shape(creatureImg, 0, 0, 0.5 * dna.genes[4], 0.75 * dna.genes[4]);
             if (debug) {
                   // sight radii
                   noFill();
@@ -56,6 +65,11 @@ class Creature {
                   line(1, 0, 1, 20*dna.genes[0]);
                   stroke(255, 0, 0);
                   line(-1, 0, -1, 20*dna.genes[1]);
+
+                  // fish affinity
+                  stroke(150, 0, 255);
+                  circle(0, 0, 2 * dna.genes[7]);
+                  line(-3, 0, -3, 20 * dna.genes[6]);
             }
             track();
             pop();
@@ -90,17 +104,37 @@ class Creature {
                               desiredRot.set(food.get(i).pos.x - this.pos.x, food.get(i).pos.y - this.pos.y);
                         }
                   }
-                  if (d < 5) {
+                  if (d < dna.genes[4] / 2) {
                         eat(food.get(i));
                         food.remove(i);
                   }
             }
 
+            float minDistFish = 100000;
+
+            for (int i = 0; i < population.size(); i++) {
+
+                  d = dist(population.get(i).pos.x, population.get(i).pos.y, pos.x, pos.y);
+
+                  if (d > 0.1)
+
+                        if (d < dna.genes[7]) {
+
+                              if (d < minDistFish) {
+
+                                    d = minDistFish;
+                                    desiredFish.set(population.get(i).pos.x - this.pos.x, population.get(i).pos.y - this.pos.y);
+                              }
+                        }
+            }
+
             desiredFood.setMag(dna.genes[0]);
             desiredRot.setMag(dna.genes[1]);
+            desiredFish.setMag(dna.genes[6] * 5);
 
             vel.add(desiredFood);
             vel.add(desiredRot);
+            vel.add(desiredFish);
 
 
             if (pos.x > width) pos.x = 0;
@@ -114,7 +148,8 @@ class Creature {
 
             if (food.fresh == false) {
 
-                  health -= 9;
+                  health -= 2;
+                  starvation += 0.01;
             }
             if (food.fresh == true && health < 10) {
 
@@ -135,6 +170,16 @@ class Creature {
             if (random(1) < mutationRate) {
                   dna.genes[3] += random(-25, 25);
                   if (dna.genes[3] > 200) dna.genes[3] = 200;
+            }
+            if (random(1) < mutationRate) {
+                  dna.genes[4] += random(-1, 1);
+                  if (dna.genes[4] < 5) dna.genes[4] = 5;
+                  dna.genes[5] = 1 / dna.genes[4];
+            }
+            if (random(1) < mutationRate) dna.genes[6] += random(-0.35, 0.35);
+            if (random(1) < mutationRate) {
+                  dna.genes[7] += random(-25, 25);
+                  if (dna.genes[7] > 200) dna.genes[7] = 200;
             }
       }
 }
